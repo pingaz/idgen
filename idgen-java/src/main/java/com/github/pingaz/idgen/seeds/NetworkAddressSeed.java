@@ -35,7 +35,7 @@ public class NetworkAddressSeed implements Seed {
             throw new IllegalArgumentException(String.format("generator bits can't be greater than %d or less than 0", MAX_GENERATOR_BIT));
         }
         this.generatorBits = generatorBits;
-        this.generatorId = DEFAULT_GENERATOR_ID % (DEFAULT_GENERATOR_ID >> (MAX_GENERATOR_BIT - generatorBits));
+        this.generatorId = (~(-1 << generatorBits)) & DEFAULT_GENERATOR_ID;
     }
 
     @Override
