@@ -31,11 +31,15 @@ public class NetworkAddressSeed implements Seed {
     }
 
     public NetworkAddressSeed(int generatorBits) {
-        if(generatorBits > MAX_GENERATOR_BIT || generatorBits <= 0){
+        this( generatorBits, DEFAULT_GENERATOR_ID );
+    }
+
+    public NetworkAddressSeed(int generatorBits, int ip){
+        if(generatorBits > MAX_GENERATOR_BIT || generatorBits < 0){
             throw new IllegalArgumentException(String.format("generator bits can't be greater than %d or less than 0", MAX_GENERATOR_BIT));
         }
         this.generatorBits = generatorBits;
-        this.generatorId = (~(-1 << generatorBits)) & DEFAULT_GENERATOR_ID;
+        this.generatorId = (~(-1 << generatorBits)) & ip;
     }
 
     @Override
