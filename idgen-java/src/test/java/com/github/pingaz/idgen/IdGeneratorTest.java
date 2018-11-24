@@ -1,6 +1,7 @@
 package com.github.pingaz.idgen;
 
 import com.github.pingaz.idgen.seeds.NetworkAddressSeed;
+import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +15,15 @@ import static org.junit.Assert.assertTrue;
  * @author ping
  */
 public class IdGeneratorTest {
+
+    @Test
+    public void testHexString(){
+        IdGenerator idGenerator = IdGenerator.createLongTimeBased();
+        byte[] bytes = idGenerator.nextBytes();
+        assertEquals(8, bytes.length);
+        assertEquals(16, idGenerator.nextHexString().length());
+        assertEquals(8, idGenerator.nextByteBuffer().array().length);
+    }
 
     @org.junit.Test
     public void testLongGeneratorPerformance(){
@@ -48,7 +58,7 @@ public class IdGeneratorTest {
         validateLongGenerator(generator, 10, idGenerator);
     }
 
-    private void validateLongGenerator(int generator, int generatorBit, IdGenerator idGenerator) throws InterruptedException {
+    public static void validateLongGenerator(int generator, int generatorBit, IdGenerator idGenerator) throws InterruptedException {
         long id = idGenerator.nextLong();
         int generatorLeftShift = 28 - generatorBit;
 
@@ -90,7 +100,7 @@ public class IdGeneratorTest {
         validateLongGenerate(generator, generatorBit, idGenerator);
     }
 
-    private void validateLongGenerate(final int generator, final int generatorBit, IdGenerator idGenerator) {
+    public  static void validateLongGenerate(final int generator, final int generatorBit, IdGenerator idGenerator) {
         ConcurrentHashMap<Long, Long> set = new ConcurrentHashMap<>();
 
         int generatorLeftShift = 28 - generatorBit;

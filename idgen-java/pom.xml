@@ -30,7 +30,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.pingaz</groupId>
     <artifactId>idgen</artifactId>
-    <version>0.1.0-ALPHA</version>
+    <version>0.1.1-ALPHA</version>
 
     <build>
         <plugins>
@@ -91,6 +91,11 @@
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -243,6 +243,9 @@ public class IUID extends Id implements Comparable<IUID>{
             throw new RuntimeException(e);
         }
     }
+    public static int getLocalMachineIdentifier(){
+        return MACHINE_IDENTIFIER;
+    }
 
     private static int createMachineIdentifier() {
         // build a 2-byte machine piece based on NICs info

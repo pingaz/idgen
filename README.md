@@ -1,6 +1,26 @@
 # Distributed unique ID generators
 
+## Usage
+
+Maven pom.xml:
+
+```xml
+<dependency>
+  <groupId>com.github.pingaz</groupId>
+  <artifactId>idgen</artifactId>
+  <version>0.1.1-ALPHA</version>
+</dependency>
+```
+
+New a generator and create a id:
+
+```java
+IdGenerator idGenerator = IdGenerator.createLongTimeBased();
+idGenerator.nextLong();
+```
+
 ## Long UID
+
 It is a distributed unique ID generator inspired by Twitter's Snowflake.
 <p>
 A Long UID is composed of
