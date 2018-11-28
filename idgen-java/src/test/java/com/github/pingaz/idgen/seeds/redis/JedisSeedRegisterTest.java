@@ -8,14 +8,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author ping
@@ -41,6 +40,27 @@ public class JedisSeedRegisterTest {
 
         register.unregister(namespace, test.getSeedId(), test.getGeneratorId());
         register.unregister(namespace, testMac.getSeedId(), testMac.getGeneratorId());
+    }
+
+    @Test
+    public void testScheduler() throws InterruptedException {
+        SeedRegister register = new RedisSeedRegister(
+                new JedisAdapter("172.18.20.224", 6379, ""),
+                0, 20, 5);
+
+        String namespace = "testScheduler";
+        CentralSeed test = CentralSeed.getInstance(register, namespace);
+
+        CentralSeed.start(2, TimeUnit.SECONDS);
+        Thread.sleep(5 * 1000);
+        CentralSeed test2 = CentralSeed.getInstance(register, namespace, CentralSeed.MAC_MODE);
+        assertNotEquals(test.getGeneratorId(), test2.getGeneratorId());
+        register.unregister(namespace, test2.getSeedId(), test2.getGeneratorId());
+        CentralSeed.stop();
+
+        Thread.sleep(3 * 1000);
+        CentralSeed test3 = CentralSeed.getInstance(register, namespace);
+        assertEquals(test.getGeneratorId(), test3.getGeneratorId());
     }
 
     @Test

@@ -30,7 +30,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.pingaz</groupId>
     <artifactId>idgen</artifactId>
-    <version>0.1.1-ALPHA</version>
+    <version>0.1.2-SNAPSHOT</version>
 
     <build>
         <plugins>

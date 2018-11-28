@@ -5,10 +5,12 @@ import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -33,13 +35,16 @@ public class IdGeneratorTest {
         int number = 1000 * 1000;
         long time = System.currentTimeMillis();
         long count = 0;
+        HashSet<Id> idSet = new HashSet<>();
         for(int i=0;i<number;i++){
-            long id = idGenerator.nextLong();
+            Id longId = idGenerator.nextId();
+            long id = longId.toLong();
             long oldCount = count;
             count = id % (id >> 18 << 18);
             long generatorId = (id >> 18) % (id >> 28 << 10);
             assertTrue((count == 0 || count == oldCount+1));
             assertEquals(seed.getGeneratorId(), generatorId);
+            assertTrue(idSet.add(longId));
         }
         System.out.println("Performance: "+ ((double)System.currentTimeMillis() - time)/1000 + " sec per milo.");
     }
@@ -56,6 +61,7 @@ public class IdGeneratorTest {
         int generator = 10;
         IdGenerator idGenerator = IdGenerator.createLongTimeBased(generator);
         validateLongGenerator(generator, 10, idGenerator);
+        assertNotEquals(idGenerator.nextId(), idGenerator.nextId());
     }
 
     public static void validateLongGenerator(int generator, int generatorBit, IdGenerator idGenerator) throws InterruptedException {

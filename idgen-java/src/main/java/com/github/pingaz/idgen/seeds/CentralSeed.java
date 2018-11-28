@@ -36,7 +36,7 @@ public class CentralSeed implements Seed{
         }, delay, unit);
     }
 
-    public synchronized void stop(){
+    public synchronized static void stop(){
         if(scheduler != null && !scheduler.isShutdown()){
             scheduler.shutdown();
         }

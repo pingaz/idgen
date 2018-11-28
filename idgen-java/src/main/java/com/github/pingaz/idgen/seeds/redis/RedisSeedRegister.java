@@ -8,16 +8,22 @@ import com.github.pingaz.idgen.seeds.SeedRegister;
 public class RedisSeedRegister implements SeedRegister {
 
     public static final int DEFAULT_BITS = 12;
-    public static final int SECONDS_PER_WEEK = 7 * 24 * 60 * 60;
+    public static final int DEFAULT_EXPIRED = 7 * 24 * 60 * 60;
 
     private final RedisAdapter redis;
     private final int from;
     private final int to;
+    private final int expired;
 
-    public RedisSeedRegister(RedisAdapter redis, int from, int to) {
+    public RedisSeedRegister(RedisAdapter redis, int from, int to, int expired) {
         this.redis = redis;
         this.from = from;
         this.to = to;
+        this.expired = expired;
+    }
+
+    public RedisSeedRegister(RedisAdapter redis, int from, int to) {
+        this(redis, from, to, DEFAULT_EXPIRED);
     }
 
     public RedisSeedRegister(RedisAdapter redis, int bits) {
@@ -76,7 +82,7 @@ public class RedisSeedRegister implements SeedRegister {
     }
 
     protected int getExpire() {
-        return SECONDS_PER_WEEK;
+        return expired;
     }
 
     protected int getGeneratorId(String index) {
