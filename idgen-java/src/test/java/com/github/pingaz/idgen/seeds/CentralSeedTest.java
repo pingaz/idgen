@@ -6,7 +6,9 @@ import com.github.pingaz.idgen.seeds.redis.RedisSeedRegister;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import redis.clients.jedis.HostAndPort;
 
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -117,16 +119,22 @@ public class CentralSeedTest {
 
     @Test
     public void testJedisAdapter(){
-        SeedRegister register = new RedisSeedRegister(new JedisAdapter("172.18.20.224", 6379, ""), 0, 20);
-        for(int i=0;i<20;i++){
+        HashSet<HostAndPort> set = new HashSet<>();
+        set.add(new HostAndPort("172.18.90.227", 7000));
+        set.add(new HostAndPort("172.18.90.227", 7001));
+        set.add(new HostAndPort("172.18.90.228", 7000));
+        set.add(new HostAndPort("172.18.90.228", 7001));
+        SeedRegister register = new RedisSeedRegister(
+                new JedisAdapter(set, "YZclskker2sc"), 0, 20);
+        for(int i=0;i<=20;i++){
             CentralSeed seed = new CentralSeed(register, "test", "test_"+i, 12 );
             assertEquals(i, seed.getGeneratorId());
         }
 
         exceptionRule.expect(RuntimeException.class);
-        new CentralSeed(register, "test", "test_"+10000, 12);
+        new CentralSeed(register, "test", "test_"+100000, 12);
 
-        for(int i=0;i<1024;i++){
+        for(int i=0;i<=20;i++){
             register.unregister("test", "test_"+i, i);
         }
     }

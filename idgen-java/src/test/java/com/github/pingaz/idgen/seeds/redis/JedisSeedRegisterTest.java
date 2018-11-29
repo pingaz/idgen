@@ -59,6 +59,7 @@ public class JedisSeedRegisterTest {
         CentralSeed.stop();
 
         Thread.sleep(3 * 1000);
+        CentralSeed.start(2, TimeUnit.SECONDS);
         CentralSeed test3 = CentralSeed.getInstance(register, namespace);
         assertEquals(test.getGeneratorId(), test3.getGeneratorId());
     }

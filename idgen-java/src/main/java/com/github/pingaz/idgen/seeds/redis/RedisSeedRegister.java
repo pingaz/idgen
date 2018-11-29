@@ -48,6 +48,7 @@ public class RedisSeedRegister implements SeedRegister {
                 if(value==null){
                     boolean reply = redis.set(key, seedId, getExpire());
                     if(reply){
+                        redis.set(indexKey, getGeneratorHex(i), getExpire());
                         return i;
                     }
                 }else if(value.equals(seedId)){
@@ -87,6 +88,9 @@ public class RedisSeedRegister implements SeedRegister {
 
     protected int getGeneratorId(String index) {
         return Integer.parseInt(index, 16);
+    }
+    protected String getGeneratorHex(int index) {
+        return Integer.toHexString(index);
     }
 
     protected String getIndexKey(String namespace, String seedId){

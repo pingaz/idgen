@@ -23,8 +23,9 @@ public class JedisAdapter implements RedisAdapter, Closeable {
             this.port = port;
         }
 
-        public RedisConfig(Set<HostAndPort> clusterNodes) {
+        public RedisConfig(Set<HostAndPort> clusterNodes, String password) {
             this.clusterNodes = clusterNodes;
+            this.password = password;
         }
     }
 
@@ -34,13 +35,18 @@ public class JedisAdapter implements RedisAdapter, Closeable {
         this(new RedisConfig(host, port, password));
     }
 
-    public JedisAdapter(Set<HostAndPort> clusterNodes){
-        this(new RedisConfig(clusterNodes));
+    public JedisAdapter(Set<HostAndPort> clusterNodes, String password){
+        this(new RedisConfig(clusterNodes, password));
     }
 
     public JedisAdapter(RedisConfig config){
         if(config.clusterNodes != null) {
-            this.jedis = new JedisCluster(config.clusterNodes);
+            this.jedis = new JedisCluster(
+                    config.clusterNodes,
+                    10000,
+                    10000,
+                    5,
+                    config.password, new JedisPoolConfig());
         } else if(config.hostName != null && config.port != 0){  //单机模式
             JedisShardInfo shardInfo = new JedisShardInfo(config.hostName, config.port);
             if (config.password != null && !"".equals(config.password)) {

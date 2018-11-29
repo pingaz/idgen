@@ -39,6 +39,7 @@ public class CentralSeed implements Seed{
     public synchronized static void stop(){
         if(scheduler != null && !scheduler.isShutdown()){
             scheduler.shutdown();
+            scheduler = null;
         }
     }
 
@@ -97,8 +98,8 @@ public class CentralSeed implements Seed{
     }
 
     private void refresh(){
-        seedRegister.refresh(getNamespace(), getSeedId(), getGeneratorId());
-        seedMap.putIfAbsent(getNamespace(), this);
+        if(seedRegister.refresh(getNamespace(), getSeedId(), getGeneratorId()) >= 0)
+            seedMap.putIfAbsent(getNamespace(), this);
     }
 
     public String getSeedId() {
