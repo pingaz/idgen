@@ -29,17 +29,26 @@ public class JedisSeedRegisterTest {
     @Test
     public void testSimple(){
         String namespace = "testSimple";
+
         CentralSeed test = CentralSeed.getInstance(register, namespace);
-        assertEquals(12, test.getGeneratorBits());
-        assertEquals(0, test.getGeneratorId());
-
-
         CentralSeed testMac = CentralSeed.getInstance(register, namespace, CentralSeed.MAC_MODE);
-        assertEquals(12, testMac.getGeneratorBits());
-        assertEquals(1, testMac.getGeneratorId());
+        CentralSeed seed = new CentralSeed(register, namespace, "test");
 
-        register.unregister(namespace, test.getSeedId(), test.getGeneratorId());
-        register.unregister(namespace, testMac.getSeedId(), testMac.getGeneratorId());
+        try {
+            assertEquals(12, test.getGeneratorBits());
+            assertEquals(0, test.getGeneratorId());
+
+            assertEquals(12, testMac.getGeneratorBits());
+            assertEquals(1, testMac.getGeneratorId());
+
+            assertEquals(12, seed.getGeneratorBits());
+            assertEquals(2, seed.getGeneratorId());
+        }finally {
+            register.unregister(namespace, test.getSeedId(), test.getGeneratorId());
+            register.unregister(namespace, testMac.getSeedId(), testMac.getGeneratorId());
+            register.unregister(namespace, seed.getSeedId(), seed.getGeneratorId());
+
+        }
     }
 
     @Test

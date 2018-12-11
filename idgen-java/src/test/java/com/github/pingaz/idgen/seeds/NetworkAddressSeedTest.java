@@ -10,6 +10,12 @@ import static org.junit.Assert.*;
 public class NetworkAddressSeedTest {
 
     @Test
+    public void testNetwork(){
+        NetworkAddressSeed networkAddressSeed = new NetworkAddressSeed();
+        System.out.println(networkAddressSeed.getGeneratorId());
+    }
+
+    @Test
     public void testConstruct(){
         for(int i=0;i<=24;i++){
             validate(i);

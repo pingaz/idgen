@@ -31,7 +31,7 @@ func (r *RedisSeedRegister) Register(namespace string, seedId string) int {
 	indexKey := getIndexKey(namespace, seedId)
 	index := r.adapter.Get(indexKey)
 	if index != ""{
-		return r.Refresh(namespace, seedId, getGeneratorId(index))
+		return getGeneratorId(index)
 	}else{
 		for i:=r.from; i<=r.to; i++{
 			key := getSeedKey(namespace, i)
@@ -68,7 +68,6 @@ func (r *RedisSeedRegister) Unregister(namespace string, seedId string, generato
 	if oldSeedId!="" && oldSeedId == seedId{
 		r.adapter.Del(oldSeedId)
 	}
-	r.adapter.Del(seedKey)
 }
 
 func getIndexKey( namespace string,  seedId string ) string{

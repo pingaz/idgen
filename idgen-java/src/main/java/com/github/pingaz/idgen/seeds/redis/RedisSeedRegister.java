@@ -38,9 +38,9 @@ public class RedisSeedRegister implements SeedRegister {
     public int register(String namespace, String seedId) {
         String indexKey = getIndexKey(namespace, seedId);
         String index = redis.get(indexKey);
+        System.out.println("register: index key - "+indexKey + ", index - "+index);
         if(index != null){
-            int generatorId = getGeneratorId(index);
-            return refresh(namespace, seedId, generatorId);
+            return getGeneratorId(index);
         }else{
             for(int i=from; i<=to; i++){
                 String key = getSeedKey(namespace, i);
@@ -74,10 +74,11 @@ public class RedisSeedRegister implements SeedRegister {
 
     @Override
     public void unregister(String namespace, String seedId, int generatorId) {
+        String indexKey = getIndexKey(namespace, seedId);
         String seedKey = getSeedKey(namespace, generatorId);
         String oldSeedId = redis.get(seedKey);
-        if(oldSeedId!=null && oldSeedId.equals(seedId)){
-            redis.del(oldSeedId);
+        if(oldSeedId ==null || oldSeedId.equals(seedId)){
+            redis.del(indexKey);
         }
         redis.del(seedKey);
     }

@@ -1,7 +1,9 @@
 package com.github.pingaz.idgen.seeds;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * @author ping
@@ -14,7 +16,7 @@ public class NetworkAddressSeed implements Seed {
 
     static{
         try {
-            InetAddress address = InetAddress.getLocalHost();
+            InetAddress address = getLocalHostLANAddress();
             byte[] ip = address.getAddress();
             DEFAULT_GENERATOR_ID =
                     ((0xff & ip[1])<<16) | ((0xff & ip[2])<<8) | (0xff & ip[3]);
@@ -50,5 +52,37 @@ public class NetworkAddressSeed implements Seed {
     @Override
     public int getGeneratorBits() {
         return this.generatorBits;
+    }
+
+    public static InetAddress getLocalHostLANAddress() throws UnknownHostException {
+        try {
+            InetAddress candidateAddress = null;
+            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
+                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {
+                        if (inetAddr.isSiteLocalAddress()) {
+                            return inetAddr;
+                        } else if (candidateAddress == null) {
+                            candidateAddress = inetAddr;
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                return candidateAddress;
+            }
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return jdkSuppliedAddress;
+        } catch (Exception e) {
+            UnknownHostException unknownHostException = new UnknownHostException(
+                    "Failed to determine LAN address: " + e);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
+        }
     }
 }

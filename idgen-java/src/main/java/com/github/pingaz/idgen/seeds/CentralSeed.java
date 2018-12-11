@@ -120,9 +120,13 @@ public class CentralSeed implements Seed{
         return generatorBits;
     }
 
+    public SeedRegister getSeedRegister() {
+        return seedRegister;
+    }
+
     private static String getIpv4(){
         try {
-            InetAddress address = InetAddress.getLocalHost();
+            InetAddress address = NetworkAddressSeed.getLocalHostLANAddress();
             byte[] ip = address.getAddress();
             return Integer.toHexString(
                     (((0xff & ip[0])<<24) | ((0xff & ip[1])<<16) | ((0xff & ip[2])<<8) | (0xff & ip[3]))
@@ -138,7 +142,7 @@ public class CentralSeed implements Seed{
 
     private static String getNetworkMac(){
         try {
-            InetAddress address = InetAddress.getLocalHost();
+            InetAddress address = NetworkAddressSeed.getLocalHostLANAddress();
             NetworkInterface network = NetworkInterface.getByInetAddress(address);
             byte[] mac = network.getHardwareAddress();
             StringBuilder sb = new StringBuilder();
